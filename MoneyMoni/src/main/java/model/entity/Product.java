@@ -1,5 +1,6 @@
 package model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,19 +20,39 @@ import lombok.ToString;
 @ToString
 @Entity
 public class Product {
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq_gen")
-    @SequenceGenerator(
-        name = "product_seq_gen",
-        sequenceName = "product_seq",  // 실제 DB에서 생성될 시퀀스 이름
-        allocationSize = 1             // 1씩 증가
-    )
-    private Long id;
 
-    private String bankName;      // 금융회사명
-    private String productName;   // 상품명
-    private String joinWay;       // 가입 방법
-    private String interestType;  // 금리 유형
-    private String period;        // 저축 기간
-    private Double rate;          // 금리
+    // 기본키: 금융상품코드
+    @Id
+    private String finPrdtCd;
+
+    // 예금/적금 구분 (D: 예금, S: 적금)
+    private String prdtType;
+
+    // 공시 제출월
+    private String dclsMonth;
+
+    // 금융회사 코드
+    private String finCoNo;
+
+    // 금융회사명
+    private String korCoNm;
+
+    // 상품명
+    private String finPrdtNm;
+
+    // 가입 방법
+    private String joinWay;
+
+    // 만기 후 이자율 설명
+    @Column(length = 2000)
+    private String mtrtInt;
+
+    // 우대 조건
+    private String spclCnd;
+
+    // 가입 제한 여부
+    private String joinDeny;
+
+    // 가입 대상
+    private String joinMember;
 }

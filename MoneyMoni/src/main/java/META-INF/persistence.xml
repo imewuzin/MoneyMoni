@@ -20,7 +20,7 @@
 		 	
 		 	<!-- value="create" : table 생성
 		 		value="none" : 이미 생성된 존재하는 table 사용 -->
- 			<property name="hibernate.hbm2ddl.auto" value="update" /> 
+ 			<property name="hibernate.hbm2ddl.auto" value="none" /> 
 			
 		</properties> 
 	</persistence-unit>
