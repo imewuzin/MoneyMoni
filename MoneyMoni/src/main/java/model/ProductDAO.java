@@ -59,21 +59,6 @@ public class ProductDAO {
 
 	        return product;
 	    }
-
-	    public static List<Product> findByBank(String bankName) {
-	        EntityManager em = emf.createEntityManager();
-	        List<Product> result = null;
-	        try {
-	            List<Product> all = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
-	            result = all.stream()
-	                        .filter(p -> p.getKorCoNm().equals(bankName))
-	                        .collect(Collectors.toList());
-	        } finally {
-	            em.close();
-	            em = null;
-	        }
-	        return result;
-	    }
 	    
 	    public static List<String> findAllBankNames() {
 	        EntityManager em = emf.createEntityManager();
@@ -91,4 +76,19 @@ public class ProductDAO {
 	        }
 	        return result;
 	    }
+	    
+//	    public static List<Product> findByBank(String bankName) {
+//	        EntityManager em = emf.createEntityManager();
+//	        List<Product> result = null;
+//	        try {
+//	            List<Product> all = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+//	            result = all.stream()
+//	                        .filter(p -> p.getKorCoNm().equals(bankName))
+//	                        .collect(Collectors.toList());
+//	        } finally {
+//	            em.close();
+//	            em = null;
+//	        }
+//	        return result;
+//	    }
 }

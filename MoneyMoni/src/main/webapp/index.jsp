@@ -130,7 +130,7 @@
       <div>
         <select id="bankFilter" class="form-select">
           <option value="all">전체 보기</option>
-          <% Set<String> banks = new TreeSet<>();
+          <% List<String> banks = ProductDAO.findAllBankNames();
              if (products != null) {
                for (Product p : products) {
                  banks.add(p.getKorCoNm());
