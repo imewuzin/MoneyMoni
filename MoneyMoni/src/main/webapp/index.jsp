@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>MoneyMoni 예금 상품</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
       background-color: #fdfaf6;
@@ -19,15 +19,30 @@
       font-weight: bold;
     }
 
-    .favorite-link {
-      text-align: right;
-      margin: 0 20px 10px;
+    .filter-group {
+      text-align: center;
+      margin-bottom: 20px;
     }
+  
+    .filter-group button {
+  margin: 0 8px;
+  background: none;      /* 배경 없애기 */
+  border: none;          /* 테두리 없애기 */
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #745f50;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 8px 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
 
-    hr {
-      border-top: 2px solid #e4dcd1;
-      margin: 20px 0 30px;
-    }
+.filter-group button.active,
+.filter-group button:hover {
+  background-color: #a47764;
+  color: white;
+  outline: none;
+}
 
     select {
       display: block;
@@ -52,21 +67,6 @@
       transform: translateY(-5px);
     }
 
-    .favorite-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: #ccc;
-      cursor: pointer;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-
-    .favorite-btn.active {
-      color: #ffd700;
-    }
-
     .card-title {
       font-weight: bold;
       color: #745f50;
@@ -81,121 +81,119 @@
     .container {
       max-width: 1200px;
     }
-
-    .row {
-      margin-bottom: 30px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>💰 MoneyMoni 예금 상품 목록</h1>
-    <p class="favorite-link"><a href="view/favorite.jsp">⭐ 내 상품 보기</a></p>
-    <hr>
 
-    <%
-      List<Product> products = null;
-      Set<String> favorites = (Set<String>) session.getAttribute("favorites");
-      if (favorites == null) {
-          favorites = new HashSet<>();
-          session.setAttribute("favorites", favorites);
-      }
-
-      try {
-          products = ProductDAO.findAll();
-      } catch (Exception e) {
-    %>
-      <div class="alert alert-danger">
-        ❌ 상품을 불러오는 중 오류 발생: <%= e.getMessage() %>
-      </div>
-    <%
-      }
-    %>
+    <!-- 예금 / 적금 필터 버튼 그룹 -->
+    <div class="filter-group" id="typeFilterGroup">
+      <button type="button" class="btn btn-outline-primary active" data-type="all">전체</button>
+      <button type="button" class="btn btn-outline-primary" data-type="D">예금</button>
+      <button type="button" class="btn btn-outline-primary" data-type="S">적금</button>
+    </div>
 
     <!-- 은행 필터 드롭다운 -->
     <select id="bankFilter">
       <option value="all">전체 보기</option>
       <%
-        HashSet<String> banks = new HashSet<>();
+        List<Product> products = null;
+        try {
+          products = ProductDAO.findAll();
+        } catch (Exception e) {
+      %>
+      <div class="alert alert-danger">
+        ❌ 상품을 불러오는 중 오류 발생: <%= e.getMessage() %>
+      </div>
+      <%
+        }
+        Set<String> banks = new TreeSet<>();
         if (products != null) {
           for (Product p : products) {
-              banks.add(p.getKorCoNm());
+            banks.add(p.getKorCoNm());
           }
           for (String bank : banks) {
       %>
-        <option value="<%= bank %>"><%= bank %></option>
+      <option value="<%= bank %>"><%= bank %></option>
       <%
           }
         }
       %>
     </select>
 
-    <!-- 카드 리스트 -->
+    <!-- 상품 리스트 -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="productList">
       <%
         if (products != null && !products.isEmpty()) {
-            for (Product p : products) {
-                boolean isFavorite = favorites.contains(p.getFinPrdtCd());
+          for (Product p : products) {
       %>
-        <div class="col product-card" data-bank="<%= p.getKorCoNm() %>">
-          <div class="card h-100 p-3 position-relative">
-            <button type="button" class="favorite-btn <%= isFavorite ? "active" : "" %>"
-              onclick="toggleFavorite(this, '<%= p.getFinPrdtCd() %>')">★</button>
-            <div class="card-body">
-              <h5 class="card-title"><%= p.getFinPrdtNm() %></h5>
-              <h6 class="card-subtitle mb-2 text-muted"><%= p.getKorCoNm() %></h6>
-              <p class="card-text">
-                🧾 <strong>가입 방법:</strong> <%= p.getJoinWay() %><br>
-                🕓 <strong>공시월:</strong> <%= p.getDclsMonth() %><br>
-                💡 <strong>만기 후 이자:</strong> <%= p.getMtrtInt() %><br>
-                🎯 <strong>우대 조건:</strong> <%= p.getSpclCnd() %><br>
-                🙅 <strong>가입 제한:</strong> <%= p.getJoinDeny() %><br>
-                👥 <strong>가입 대상:</strong> <%= p.getJoinMember() %>
-              </p>
-            </div>
+      <div class="col product-card" data-bank="<%= p.getKorCoNm() %>" data-type="<%= p.getPrdtType() %>">
+        <div class="card h-100 p-3">
+          <div class="card-body">
+            <h5 class="card-title"><%= p.getFinPrdtNm() %></h5>
+            <h6 class="card-subtitle mb-2 text-muted"><%= p.getKorCoNm() %></h6>
+            <p class="card-text">
+              🧾 <strong>가입 방법:</strong> <%= p.getJoinWay() %><br>
+              🕓 <strong>공시월:</strong> <%= p.getDclsMonth() %><br>
+              💡 <strong>만기 후 이자:</strong> <%= p.getMtrtInt() %><br>
+              🎯 <strong>우대 조건:</strong> <%= p.getSpclCnd() %><br>
+              🙅 <strong>가입 제한:</strong> <%= p.getJoinDeny() %><br>
+              👥 <strong>가입 대상:</strong> <%= p.getJoinMember() %>
+            </p>
           </div>
         </div>
+      </div>
       <%
-            }
+          }
         } else {
       %>
-        <p class="text-center">불러올 상품이 없습니다.</p>
+      <p class="text-center">불러올 상품이 없습니다.</p>
       <%
         }
       %>
     </div>
   </div>
 
-  <!-- 즐겨찾기 토글 -->
+  <!-- 필터 스크립트 -->
   <script>
-    function toggleFavorite(button, finPrdtCd) {
-      fetch('toggleFavorite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'finPrdtCd=' + encodeURIComponent(finPrdtCd)
-      })
-      .then(response => {
-        if (response.ok) {
-          button.classList.toggle('active');
-        } else {
-          alert('❌ 즐겨찾기 처리 중 오류가 발생했습니다.');
-        }
-      });
-    }
-  </script>
+    const typeButtons = document.querySelectorAll('#typeFilterGroup button');
+    const bankFilter = document.getElementById('bankFilter');
+    const cards = document.querySelectorAll('.product-card');
 
-  <!-- 은행 필터링 -->
-  <script>
-    const filter = document.getElementById("bankFilter");
-    const cards = document.querySelectorAll(".product-card");
+    let selectedType = 'all';
+    let selectedBank = 'all';
 
-    filter.addEventListener("change", () => {
-      const selected = filter.value;
-      cards.forEach(card => {
-        const bank = card.getAttribute("data-bank");
-        card.style.display = (selected === "all" || bank === selected) ? "block" : "none";
+    // 예금/적금 버튼 클릭 이벤트
+    typeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // 버튼 active 스타일 토글
+        typeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        selectedType = btn.getAttribute('data-type');
+        filterCards();
       });
     });
+
+    // 은행 필터 변경 이벤트
+    bankFilter.addEventListener('change', () => {
+      selectedBank = bankFilter.value;
+      filterCards();
+    });
+
+    // 필터링 함수
+    function filterCards() {
+      cards.forEach(card => {
+        const bank = card.getAttribute('data-bank');
+        const type = card.getAttribute('data-type');
+
+        const matchBank = (selectedBank === 'all' || bank === selectedBank);
+        const matchType = (selectedType === 'all' || type === selectedType);
+
+        card.style.display = (matchBank && matchType) ? 'block' : 'none';
+      });
+    }
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
