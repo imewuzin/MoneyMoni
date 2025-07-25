@@ -21,14 +21,30 @@
       background-color: #fdfaf6;
       font-family: 'Noto Sans KR', sans-serif;
     }
-
     h1 {
       text-align: center;
       margin: 40px 0 20px;
       color: #a47764;
       font-weight: bold;
     }
-
+    .back-link {
+      position: absolute;
+      top: 20px;
+      right: 0;
+      padding-right: 15px;
+    }
+    .back-link a {
+      border: none;
+      background: none;
+      color: #745f50;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+      padding: 6px 12px;
+    }
+    .back-link a:hover {
+      text-decoration: underline;
+    }
     .card {
       border: none;
       border-radius: 16px;
@@ -37,11 +53,9 @@
       transition: transform 0.2s;
       position: relative;
     }
-
     .card:hover {
       transform: translateY(-5px);
     }
-
     .favorite-btn {
       position: absolute;
       top: 10px;
@@ -52,33 +66,35 @@
       color: #ffd700;
       cursor: pointer;
     }
-
     .card-title {
       font-weight: bold;
       color: #745f50;
     }
-
     .card-text {
       font-size: 0.9rem;
       color: #555;
       white-space: pre-line;
     }
-
     .container {
       max-width: 1200px;
+      position: relative;
+      padding-right: 15px;
+      padding-left: 15px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>⭐ 내 즐겨찾기 상품</h1>
-    <p class="text-end"><a href="../index.jsp">← 상품 목록으로 돌아가기</a></p>
+    <p class="back-link"><a href="../index.jsp">← 상품 목록으로 돌아가기</a></p>
+    <div style="text-align: center;" class="mb-4">
+      <img src="../images/logo.png" alt="MoneyMoni 로고" style="height: 78px; margin-top: 30px;">
+    </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="favorites-container">
       <% for (Product p : products) { %>
         <div class="col product-card" id="card-<%= p.getFinPrdtCd() %>">
-          <div class="card h-100 p-3">
-            <button class="favorite-btn" onclick="removeFavorite('<%= p.getFinPrdtCd() %>')">★</button>
+          <div class="card h-100 p-3" onclick="removeFavorite('<%= p.getFinPrdtCd() %>')">
+            <button class="favorite-btn">★</button>
             <div class="card-body">
               <h5 class="card-title"><%= p.getFinPrdtNm() %></h5>
               <h6 class="card-subtitle mb-2 text-muted"><%= p.getKorCoNm() %></h6>
