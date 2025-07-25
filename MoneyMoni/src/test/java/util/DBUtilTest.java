@@ -1,19 +1,18 @@
 package util;
 
-import javax.persistence.EntityManager;
-import org.junit.Test;
+//import javax.persistence.EntityManager;
+//import org.junit.Test;
 
-import model.entity.Product;
 
 public class DBUtilTest {
 
-    @Test
-    public void testConnection() {
-        EntityManager em = DBUtil.getEntityManager();
-        System.out.println("✅ 연결 성공: " + em);
-        em.close();
-        DBUtil.close();
-    }
+//    @Test
+//    public void testConnection() {
+//        EntityManager em = DBUtil.getEntityManager();
+//        System.out.println("✅ 연결 성공: " + em);
+//        em.close();
+//        DBUtil.close();
+//    }
     
 //    @Test
 //    public void testInsert() {

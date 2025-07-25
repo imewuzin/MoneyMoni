@@ -1,16 +1,13 @@
 package util;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.junit.Test;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 public class DBUtil {
 	private static EntityManagerFactory emf;
     static {
-        emf = Persistence.createEntityManagerFactory("moneyMone");
+        emf = Persistence.createEntityManagerFactory("moneymoni");
     }
     public static EntityManager getEntityManager(){
         return emf.createEntityManager();
