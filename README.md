@@ -4,12 +4,13 @@
 > 금융감독원 공개 데이터를 기반으로 한 예금·적금 상품 조회 웹 서비스입니다.
 > 
 
-```markdown
-| 이제현  | 임유진     | 서민지              | 이조은                                                   |
-|:---:|:--------------:|:------------------:|:--------------------------------:|
-| <img src="https://github.com/lyjh98.png" width="80">      | <img src="https://github.com/imewuzin.png" width="80">    | <img src="https://github.com/menzzi.png" width="80">     | <img src="https://github.com/LeeJoEun-01.png" width="80"> |
-| [@lyjh98](https://github.com/lyjh98)  |  [@imewuzin](https://github.com/imewuzin)       | [@2jeong2](https://github.com/menzzi)   | [@LeeJoEun-01](https://github.com/LeeJoEun-01) |
-```
+| 팀원  | GitHub                                                   | 담당 기능              | 프로필 사진                                                    |
+|:---:|:--------------------------------------------------------:|:------------------:|:---------------------------------------------------------:|
+| 이제현 | [github.com/lyjh98](https://github.com/lyjh98)           |          | <img src="https://github.com/lyjh98.png" width="80">      |
+| 임유진 | [github.com/imewuzin](https://github.com/imewuzin)       | 즐겨찾기 | <img src="https://github.com/imewuzin.png" width="80">    |
+| 서민지 | [github.com/menzzi](https://github.com/menzzi)         | 적금/예금        | <img src="https://github.com/menzzi.png" width="80">     |
+| 이조은 | [github.com/LeeJoEun-01](https://github.com/LeeJoEun-01) | 은행          | <img src="https://github.com/LeeJoEun-01.png" width="80"> |
+
 
 ## 🗂️ 주요 기능
 
