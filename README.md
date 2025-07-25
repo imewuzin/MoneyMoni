@@ -4,12 +4,11 @@
 > 금융감독원 공개 데이터를 기반으로 한 예금·적금 상품 조회 웹 서비스입니다.
 > 
 
-| 팀원  | GitHub                                                   | 담당 기능              | 프로필 사진                                                    |
-|:---:|:--------------------------------------------------------:|:------------------:|:---------------------------------------------------------:|
-| 이제현 | [github.com/lyjh98](https://github.com/lyjh98)           |          | <img src="https://github.com/lyjh98.png" width="80">      |
-| 임유진 | [github.com/imewuzin](https://github.com/imewuzin)       | 즐겨찾기 | <img src="https://github.com/imewuzin.png" width="80">    |
-| 서민지 | [github.com/menzzi](https://github.com/menzzi)         | 적금/예금        | <img src="https://github.com/menzzi.png" width="80">     |
-| 이조은 | [github.com/LeeJoEun-01](https://github.com/LeeJoEun-01) | 은행          | <img src="https://github.com/LeeJoEun-01.png" width="80"> |
+### 팀원 소개
+| 이제현  | 임유진     | 서민지              | 이조은                                                   |
+|:---:|:--------------:|:------------------:|:--------------------------------:|
+| <img src="https://github.com/lyjh98.png" width="80">      | <img src="https://github.com/imewuzin.png" width="80">    | <img src="https://github.com/menzzi.png" width="80">     | <img src="https://github.com/LeeJoEun-01.png" width="80"> |
+| [@lyjh98](https://github.com/lyjh98)  |  [@imewuzin](https://github.com/imewuzin)       | [@2jeong2](https://github.com/menzzi)   | [@LeeJoEun-01](https://github.com/LeeJoEun-01) |
 
 
 ## 🗂️ 주요 기능
@@ -198,7 +197,7 @@ if (em != null && em.isOpen()) {
 
 ## 트러블 슈팅
 
-### Git 브랜치 충돌 트러블슈팅: Eclipse(master) ↔ GitHub(main)
+<details> <summary><strong> Git 브랜치 충돌 트러블슈팅: Eclipse(master) ↔ GitHub(main)  </strong></summary>
 
 ### 💥 문제 상황
 
@@ -245,8 +244,9 @@ git push -u origin main
 
 > 이때, 만약 GitHub에 이미 커밋이 있다면 충돌이 날 수 있음
 > 
+</details>
 
-### **JSP 파일을 찾지 못함 (`404 Not Found`)**
+<details> <summary><strong>JSP 파일을 찾지 못함 (`404 Not Found`)</strong></summary>
 
 ### 💥 문제 상황
 
@@ -269,8 +269,9 @@ git push -u origin main
 
 - JSP는 항상 `webapp` 아래에 생성
 - Java 소스 코드(`Servlet`, `DAO` 등)와 뷰 파일은 디렉토리 분리
+</details>
 
-### **세션 즐겨찾기 구현 오류 - 별표 상태 유지 안됨**
+<details> <summary><strong>세션 즐겨찾기 구현 오류 - 별표 상태 유지 안됨</strong></summary>
 
 ### 💥 문제 상황
 
@@ -289,8 +290,9 @@ git push -u origin main
 
 - 상태를 세션 또는 DB에 반드시 저장하고
 - JSP 렌더링 시 상태 기반으로 HTML 클래스나 값 렌더링
+</details>
 
-### **`toggleFavorite` URL만 바뀌고 별 상태가 바뀌지 않음**
+<details> <summary><strong> toggleFavorite URL만 바뀌고 별 상태가 바뀌지 않음 </strong></summary>
 
 ### 💥 문제 상황
 
@@ -310,3 +312,73 @@ git push -u origin main
 
 - 단순 상태 변경에는 form 대신 `fetch()`로 비동기 호출 사용
 - 별도 `event.preventDefault()` 또는 `type="button"` 명시
+</details>
+
+
+<details><summary><strong> em = null 코드에서 "must be final or effectively final" 오류 발생 </strong></summary>
+### 💥 문제 상황
+
+`em.find(...)`를 `stream().map()` 안에서 사용하는 DAO 메서드에서,
+
+`em = null;` 코드를 추가했더니 **컴파일 오류**가 발생함.
+
+```java
+return finPrdtCds.stream()
+    .map(id -> em.find(Product.class, id)) // ❗ 오류 발생
+    ...
+em = null; // 여기가 문제
+
+```
+
+### ❗ 에러 원인
+
+- Java의 **람다 표현식(stream, map 등)** 내부에서 사용하는 지역 변수(`em`)는 반드시
+    
+    `final` 또는 effectively final(한 번만 초기화되고 변경되지 않는 값)이어야 함
+    
+- 하지만 아래와 같이 **람다 이후 `em = null;`** 을 작성하면서, `em`이 "변경 가능한 변수"가 되어버림
+- 결국 `em.find(...)`에서 **"Local variable must be final or effectively final"** 오류 발생
+
+### ✅ 해결 방법
+
+- **방법 1 (권장)**: `em = null;`을 제거
+
+```java
+finally {
+    em.close(); // ✅ 이것만 있어도 자원 해제 OK
+    // em = null; ❌ 제거
+}
+
+```
+
+- **방법 2**: `stream` 사용 대신 일반 `for-each` 문으로 변경
+
+```java
+List<Product> result = new ArrayList<>();
+for (String id : finPrdtCds) {
+    Product p = em.find(Product.class, id);
+    if (p != null) result.add(p);
+}
+
+```
+
+- **방법 3** : `try-with-resources` 문법으로 리팩터링하여 `em.close()`도 자동 처리
+
+```java
+try (EntityManager em = emf.createEntityManager()) {
+    return finPrdtCds.stream()
+        .map(id -> em.find(Product.class, id))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+}
+```
+
+### 🛡️ 방지 방법
+
+- 람다 내부에서 사용할 외부 변수는 **절대로 바꾸지 말 것**
+- 람다에서 사용하는 `EntityManager`, `Connection`, `BufferedReader` 등은
+    
+    **그 이후에 `null`로 초기화하거나 다시 할당하지 말 것**
+    
+- 가능하면 **`try-with-resources`를 활용하여 안전하고 간결하게 관리**할 것
+ </details>
