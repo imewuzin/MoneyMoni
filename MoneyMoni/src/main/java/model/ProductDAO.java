@@ -37,4 +37,24 @@ public class ProductDAO {
 
 	        return result;
 	    }
+	    
+	    public static Product findById(String finPrdtCd) {
+	        EntityManager em = null;
+	        Product product = null;
+
+	        try {
+	            em = emf.createEntityManager();
+	            product = em.find(Product.class, finPrdtCd);
+	        } catch (Exception e) {
+	            System.err.println("❌ 상품 조회 오류: " + e.getMessage());
+	            e.printStackTrace();
+	        } finally {
+	            if (em != null && em.isOpen()) {
+	                em.close();
+	            }
+	        }
+
+	        return product;
+	    }
+
 }
