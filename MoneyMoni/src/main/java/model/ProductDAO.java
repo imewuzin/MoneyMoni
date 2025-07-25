@@ -33,6 +33,7 @@ public class ProductDAO {
 	        } finally {
 	            if (em != null && em.isOpen()) {
 	                em.close();
+	                em = null;
 	            }
 	        }
 
@@ -52,6 +53,7 @@ public class ProductDAO {
 	        } finally {
 	            if (em != null && em.isOpen()) {
 	                em.close();
+	                em = null;
 	            }
 	        }
 
@@ -68,6 +70,7 @@ public class ProductDAO {
 	                        .collect(Collectors.toList());
 	        } finally {
 	            em.close();
+	            em = null;
 	        }
 	        return result;
 	    }
@@ -84,6 +87,7 @@ public class ProductDAO {
 	                        .collect(Collectors.toList());
 	        } finally {
 	            em.close();
+	            em = null;
 	        }
 	        return result;
 	    }
