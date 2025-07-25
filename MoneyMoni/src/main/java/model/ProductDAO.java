@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -35,6 +36,36 @@ public class ProductDAO {
 	            }
 	        }
 
+	        return result;
+	    }
+	    
+	    public static List<Product> findByBank(String bankName) {
+	        EntityManager em = emf.createEntityManager();
+	        List<Product> result = null;
+	        try {
+	            List<Product> all = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+	            result = all.stream()
+	                        .filter(p -> p.getKorCoNm().equals(bankName))
+	                        .collect(Collectors.toList());
+	        } finally {
+	            em.close();
+	        }
+	        return result;
+	    }
+	    
+	    public static List<String> findAllBankNames() {
+	        EntityManager em = emf.createEntityManager();
+	        List<String> result = null;
+	        try {
+	            List<Product> all = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+	            result = all.stream()
+	                        .map(Product::getKorCoNm)
+	                        .distinct()
+	                        .sorted()
+	                        .collect(Collectors.toList());
+	        } finally {
+	            em.close();
+	        }
 	        return result;
 	    }
 }
