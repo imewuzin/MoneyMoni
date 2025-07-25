@@ -1,6 +1,8 @@
 package model;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityManager;
@@ -40,25 +42,19 @@ public class ProductDAO {
 	        return result;
 	    }
 	    
-	    public static Product findById(String finPrdtCd) {
-	        EntityManager em = null;
-	        Product product = null;
-
+	    
+	    public static List<Product> findByIds(Set<String> finPrdtCds) {
+	        EntityManager em = emf.createEntityManager();
 	        try {
-	            em = emf.createEntityManager();
-	            product = em.find(Product.class, finPrdtCd);
-	        } catch (Exception e) {
-	            System.err.println("❌ 상품 조회 오류: " + e.getMessage());
-	            e.printStackTrace();
+	            return finPrdtCds.stream()
+	                .map(id -> em.find(Product.class, id))
+	                .filter(Objects::nonNull)           // null 제거 (없는 상품 방지)
+	                .collect(Collectors.toList());
 	        } finally {
-	            if (em != null && em.isOpen()) {
-	                em.close();
-	                em = null;
-	            }
+	            em.close();
 	        }
-
-	        return product;
 	    }
+
 	    
 	    public static List<String> findAllBankNames() {
 	        EntityManager em = emf.createEntityManager();

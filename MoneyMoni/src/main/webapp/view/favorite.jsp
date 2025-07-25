@@ -1,15 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, model.entity.Product, model.ProductDAO" %>
 <%
-    Set<String> favorites = (Set<String>) session.getAttribute("favorites");
-    List<Product> products = new ArrayList<>();
-    if (favorites != null) {
-        for (String code : favorites) {
-            Product p = ProductDAO.findById(code);
-            if (p != null) products.add(p);
-        }
-    }
+Set<String> favorites = (Set<String>) session.getAttribute("favorites");
+List<Product> products = (favorites != null && !favorites.isEmpty()) 
+    ? ProductDAO.findByIds(favorites)
+    : new ArrayList<>();
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
