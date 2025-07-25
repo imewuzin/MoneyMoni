@@ -4,64 +4,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+  <meta charset="UTF-8">
+  <title>MoneyMoni 예금 상품</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fdfaf6; /* 파스텔 크림 배경 */
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 40px 0 20px;
+      color: #a47764;
+      font-weight: bold;
+    }
+
+    .card {
+      border: none;
+      border-radius: 16px;
+      background-color: #fffaf4;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-title {
+      font-weight: bold;
+      color: #745f50;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: #555;
+      white-space: pre-line;
+    }
+
+    .container {
+      max-width: 1200px;
+    }
+  </style>
 </head>
 <body>
-	<h1>💰 Welcome to MoneyMoni!</h1>
-    <p>상품 목록 보기: <a href="products">/products</a></p>
-    
-    <h1>💰 전체 예금 상품 목록</h1>
+  <div class="container">
+    <h1>💰 MoneyMoni 예금 상품 목록</h1>
 
-    <%
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <%
         List<Product> products = null;
         try {
             products = ProductDAO.findAll();
         } catch (Exception e) {
-            out.println("❌ 상품을 불러오는 중 오류 발생: " + e.getMessage());
+      %>
+        <div class="alert alert-danger">
+          ❌ 상품을 불러오는 중 오류 발생: <%= e.getMessage() %>
+        </div>
+      <%
         }
-    %>
 
-    <table border="1">
-        <tr>
-            <th>상품코드</th>
-            <th>상품유형</th>
-            <th>공시월</th>
-            <th>금융사코드</th>
-            <th>금융사명</th>
-            <th>상품명</th>
-            <th>가입방법</th>
-            <th>만기후이자</th>
-            <th>우대조건</th>
-            <th>가입제한</th>
-            <th>가입대상</th>
-        </tr>
-
-        <%
-            if (products != null) {
-                for (Product p : products) {
-        %>
-        <tr>
-            <td><%= p.getFinPrdtCd() %></td>
-            <td><%= p.getPrdtType() %></td>
-            <td><%= p.getDclsMonth() %></td>
-            <td><%= p.getFinCoNo() %></td>
-            <td><%= p.getKorCoNm() %></td>
-            <td><%= p.getFinPrdtNm() %></td>
-            <td><%= p.getJoinWay() %></td>
-            <td><%= p.getMtrtInt() %></td>
-            <td><%= p.getSpclCnd() %></td>
-            <td><%= p.getJoinDeny() %></td>
-            <td><%= p.getJoinMember() %></td>
-        </tr>
-        <%
-                }
-            } else {
-        %>
-        <tr><td colspan="11">불러올 상품이 없습니다.</td></tr>
-        <%
+        if (products != null && !products.isEmpty()) {
+            for (Product p : products) {
+      %>
+        <div class="col">
+          <div class="card h-100 p-3">
+            <div class="card-body">
+              <h5 class="card-title"><%= p.getFinPrdtNm() %></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><%= p.getKorCoNm() %></h6>
+              <p class="card-text">
+                🧾 <strong>가입 방법:</strong> <%= p.getJoinWay() %><br>
+                🕓 <strong>공시월:</strong> <%= p.getDclsMonth() %><br>
+                💡 <strong>만기 후 이자:</strong> <%= p.getMtrtInt() %><br>
+                🎯 <strong>우대 조건:</strong> <%= p.getSpclCnd() %><br>
+                🙅 <strong>가입 제한:</strong> <%= p.getJoinDeny() %><br>
+                👥 <strong>가입 대상:</strong> <%= p.getJoinMember() %>
+              </p>
+            </div>
+          </div>
+        </div>
+      <%
             }
-        %>
-    </table>
+        } else {
+      %>
+        <p class="text-center">불러올 상품이 없습니다.</p>
+      <%
+        }
+      %>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
