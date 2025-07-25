@@ -6,28 +6,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import model.entity.Product;
+import util.DBUtil;
 
 public class ProductDAO {
-	 private static EntityManagerFactory emf;
-
-	    static {
-	        try {
-	            emf = Persistence.createEntityManagerFactory("moneymoni");
-	        } catch (Exception e) {
-	            System.err.println("❌ EntityManagerFactory 초기화 실패: " + e.getMessage());
-	            e.printStackTrace();
-	        }
-	    }
 
 	    public static List<Product> findAll() {
 	        EntityManager em = null;
 	        List<Product> result = null;
 
 	        try {
-	            em = emf.createEntityManager();
+	        	em = DBUtil.getEntityManager();
 	            result = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
 	        } catch (Exception e) {
 	            System.err.println("❌ 상품 목록 조회 중 오류: " + e.getMessage());
@@ -44,7 +33,7 @@ public class ProductDAO {
 	    
 	    
 	    public static List<Product> findByIds(Set<String> finPrdtCds) {
-	        EntityManager em = emf.createEntityManager();
+	        EntityManager em = DBUtil.getEntityManager();
 	        try {
 	            return finPrdtCds.stream()
 	                .map(id -> em.find(Product.class, id))
@@ -57,7 +46,7 @@ public class ProductDAO {
 
 	    
 	    public static List<String> findAllBankNames() {
-	        EntityManager em = emf.createEntityManager();
+	        EntityManager em = DBUtil.getEntityManager();
 	        List<String> result = null;
 	        try {
 	            List<Product> all = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
@@ -74,7 +63,7 @@ public class ProductDAO {
 	    }
 	    
 //	    public static List<Product> findByBank(String bankName) {
-//	        EntityManager em = emf.createEntityManager();
+//	        EntityManager em = DBUtil.getEntityManager();
 //	        List<Product> result = null;
 //	        try {
 //	            List<Product> all = em.createQuery("SELECT p FROM Product p", Product.class).getResultList();

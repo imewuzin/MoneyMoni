@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, model.entity.Product, model.ProductDAO" %>
+<%@ page import="java.util.Set, java.util.HashSet, java.util.List, model.entity.Product, model.ProductDAO" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -107,8 +107,12 @@
       <img src="images/logo.png" alt="MoneyMoni 로고" style="height: 78px; margin-top: 30px;">
     </div>
 
-    <% List<Product> products = null;
+    <% 
+    	//? el & jstl로 변환 필수 
+    	//MVC 깨졌다??? 쩝
+       List<Product> products = null;
        Set<String> favorites = (Set<String>) session.getAttribute("favorites");
+       
        if (favorites == null) {
          favorites = new HashSet<>();
          session.setAttribute("favorites", favorites);

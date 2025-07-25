@@ -17,7 +17,7 @@ public class ToggleFavoriteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String prdtCd = request.getParameter("finPrdtCd");
+    	String prdtCd = request.getParameter("finPrdtCd");
         HttpSession session = request.getSession();
 
         @SuppressWarnings("unchecked")
